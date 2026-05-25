@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOP500 — Supercomputadores Mais Poderosos do Mundo</title>
+
+    <!-- Google Fonts: Inter + Orbitron -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ===========================
+         TELA DE LOADING FUTURISTA
+         =========================== -->
+    <div id="loading-screen">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <span class="loading-icon">⬡</span>
+                <span class="loading-title">TOP500</span>
+            </div>
+            <div class="loading-bar-wrapper">
+                <div class="loading-bar-track">
+                    <div class="loading-bar-fill" id="loading-bar"></div>
+                </div>
+                <span class="loading-percent" id="loading-percent">0%</span>
+            </div>
+            <p class="loading-status" id="loading-status">Inicializando sistema...</p>
+            <div class="loading-dots">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===========================
+         CANVAS DE PARTÍCULAS (FUNDO)
+         =========================== -->
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- ===========================
+         NAVEGAÇÃO FIXA
+         =========================== -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-icon">⬡</span>
+                <span class="logo-text">TOP<strong>500</strong></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#hero" class="nav-link active" data-section="hero">Início</a></li>
+                <li><a href="#top500" class="nav-link" data-section="top500">TOP500</a></li>
+                <li><a href="#maquinas" class="nav-link" data-section="maquinas">Máquinas</a></li>
+                <li><a href="#comparacao" class="nav-link" data-section="comparacao">Comparação</a></li>
+                <li><a href="#simulador" class="nav-link" data-section="simulador">Simulador</a></li>
+                <li><a href="#engenharia" class="nav-link" data-section="engenharia">Engenharia</a></li>
+            </ul>
+            <div class="nav-status">
+                <span class="status-dot"></span>
+                <span class="status-text">HPC ONLINE</span>
+            </div>
+            <button class="nav-toggle" id="nav-toggle" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ===========================
+         SEÇÃO 1 — HERO
+         =========================== -->
+    <section id="hero" class="hero-section">
+        <div class="hero-grid-overlay"></div>
+
+        <!-- Indicadores flutuantes HUD -->
+        <div class="hud-indicator hud-top-left" data-delay="0.3">
+            <span class="hud-label">DESEMPENHO</span>
+            <span class="hud-value">1.809 <small>PFLOPS</small></span>
+            <div class="hud-bar"><div class="hud-bar-fill" style="width:92%"></div></div>
+        </div>
+        <div class="hud-indicator hud-top-right" data-delay="0.6">
+            <span class="hud-label">MODO</span>
+            <span class="hud-value ia-badge">IA</span>
+            <span class="hud-sub">ATIVO</span>
+        </div>
+        <div class="hud-indicator hud-bottom-left" data-delay="0.9">
+            <span class="hud-label">HPC</span>
+            <span class="hud-value">EXA<small>SCALE</small></span>
+            <div class="hud-dot-row">
+                <span class="hdot on"></span><span class="hdot on"></span>
+                <span class="hdot on"></span><span class="hdot on"></span>
+                <span class="hdot on"></span><span class="hdot"></span>
+            </div>
+        </div>
+        <div class="hud-indicator hud-bottom-right" data-delay="1.2">
+            <span class="hud-label">PARALEL.</span>
+            <span class="hud-value">4.6M <small>CORES</small></span>
+            <div class="hud-bar"><div class="hud-bar-fill" style="width:78%"></div></div>
+        </div>
+
+        <!-- Conteúdo central -->
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="badge-dot"></span>
+                Engenharia de Computação — Arquitetura e Supercomputação
+            </div>
+            <h1 class="hero-title">
+                TOP<span class="accent">500</span>
+                <span class="hero-subtitle-line">Supercomputadores</span>
+                <span class="hero-subtitle-line accent-line">Mais Poderosos do Mundo</span>
+            </h1>
+            <p class="hero-description">
+                Uma investigação sobre computação de alto desempenho, inteligência artificial,
+                processamento paralelo e arquitetura computacional aplicada às máquinas que
+                definem os limites da capacidade humana de processar informação.
+            </p>
+            <div class="hero-stats-row">
+                <div class="hero-stat">
+                    <span class="hstat-value" data-target="1809">0</span>
+                    <span class="hstat-label">PFLOPS Máx.</span>
+                </div>
+                <div class="hero-stat-divider"></div>
+                <div class="hero-stat">
+                    <span class="hstat-value" data-target="500">0</span>
+                    <span class="hstat-label">Máquinas no Ranking</span>
+                </div>
+                <div class="hero-stat-divider"></div>
+                <div class="hero-stat">
+                    <span class="hstat-value" data-target="3">0</span>
+                    <span class="hstat-label">Analisadas</span>
+                </div>
+            </div>
+            <div class="hero-buttons">
+                <a href="#maquinas" class="btn-primary">
+                    <span class="btn-icon">◈</span>
+                    Explorar Máquinas
+                </a>
+                <a href="#simulador" class="btn-secondary">
+                    <span class="btn-icon">▶</span>
+                    Simular Processamento
+                </a>
+            </div>
+        </div>
+
+        <!-- Imagem hero com overlay -->
+        <div class="hero-visual">
+            <div class="hero-image-container">
+                <img src="assets/images/backgrounds/hpc.jpg"
+                     alt="Supercomputador"
+                     class="hero-image"
+                     onerror="this.style.display='none'; this.parentElement.classList.add('no-image')">
+                <div class="hero-image-overlay"></div>
+            </div>
+            <!-- Anéis animados (fallback visual) -->
+            <div class="hero-rings">
+                <div class="ring ring-1"></div>
+                <div class="ring ring-2"></div>
+                <div class="ring ring-3"></div>
+                <div class="ring-center">
+                    <span>HPC</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="scroll-indicator">
+            <span class="scroll-text">SCROLL</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- ===========================
+         SEÇÃO 2 — O QUE É O TOP500
+         =========================== -->
+    <section id="top500" class="section">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">// 01 — CONTEXTO</span>
+                <h2 class="section-title">O que é o <span class="accent">TOP500</span>?</h2>
+                <p class="section-subtitle">
+                    Desde 1993, o TOP500 cataloga os supercomputadores mais poderosos do mundo,
+                    medidos em operações de ponto flutuante por segundo (FLOPS) através do
+                    benchmark Linpack.
+                </p>
+            </div>
+
+            <div class="top500-info-grid reveal">
+                <div class="info-main-card">
+                    <div class="info-card-icon">⬡</div>
+                    <h3>O Ranking Global</h3>
+                    <p>
+                        O TOP500 é publicado duas vezes ao ano — em junho (ISC High Performance)
+                        e novembro (SC Conference). Ele representa o estado-da-arte da computação
+                        de alto desempenho (HPC), refletindo avanços em arquitetura, energia,
+                        paralelismo e IA a cada semestre.
+                    </p>
+                    <p>
+                        O critério principal é o desempenho no <strong>LINPACK</strong>, um benchmark
+                        que resolve sistemas de equações lineares densas. A unidade de medida moderna
+                        é <strong>PFLOPS</strong> (petaFLOPS = 10<sup>15</sup> operações/segundo).
+                    </p>
+                    <div class="info-badge-row">
+                        <span class="info-badge">Desde 1993</span>
+                        <span class="info-badge">2× por ano</span>
+                        <span class="info-badge">LINPACK Benchmark</span>
+                    </div>
+                </div>
+
+                <div class="info-stats-column">
+                    <div class="mini-stat-card">
+                        <span class="msc-icon">⚡</span>
+                        <span class="msc-value">1.809</span>
+                        <span class="msc-label">PFLOPS — Recorde atual</span>
+                    </div>
+                    <div class="mini-stat-card">
+                        <span class="msc-icon">🌐</span>
+                        <span class="msc-value">30+</span>
+                        <span class="msc-label">Países representados</span>
+                    </div>
+                    <div class="mini-stat-card">
+                        <span class="msc-icon">🔋</span>
+                        <span class="msc-value">10 GW+</span>
+                        <span class="msc-label">Energia consumida pelo Top10</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cards de aplicações -->
+            <div class="app-cards-grid reveal">
+                <div class="app-card" data-delay="0">
+                    <div class="app-card-icon ia-color">◈</div>
+                    <h4>Inteligência Artificial</h4>
+                    <p>Treinamento de LLMs, redes neurais profundas, reconhecimento de padrões e modelos generativos em escala massiva.</p>
+                    <div class="app-card-line ia-line"></div>
+                </div>
+                <div class="app-card" data-delay="0.1">
+                    <div class="app-card-icon sci-color">◉</div>
+                    <h4>Ciência</h4>
+                    <p>Simulações climáticas, modelagem de proteínas, física nuclear, cosmologia e descoberta de medicamentos.</p>
+                    <div class="app-card-line sci-line"></div>
+                </div>
+                <div class="app-card" data-delay="0.2">
+                    <div class="app-card-icon eng-color">◎</div>
+                    <h4>Engenharia</h4>
+                    <p>CFD, elementos finitos, dinâmica de fluidos, simulação de estruturas, aeronáutica e exploração de recursos.</p>
+                    <div class="app-card-line eng-line"></div>
+                </div>
+                <div class="app-card" data-delay="0.3">
+                    <div class="app-card-icon data-color">◐</div>
+                    <h4>Ciência de Dados</h4>
+                    <p>Análise de petabytes de dados geológicos, sísmicos, genômicos e financeiros em tempo quasi-real.</p>
+                    <div class="app-card-line data-line"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===========================
+         SEÇÃO 3 — CARDS DAS MÁQUINAS
+         =========================== -->
+    <section id="maquinas" class="section section-dark">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">// 02 — MÁQUINAS ANALISADAS</span>
+                <h2 class="section-title">Os <span class="accent">Supercomputadores</span></h2>
+                <p class="section-subtitle">
+                    Três máquinas distintas em origem, arquitetura e propósito — unidas pela
+                    capacidade de processar o impossível.
+                </p>
+            </div>
+
+            <div class="machines-grid">
+                <!-- Card El Capitan -->
+                <div class="machine-card reveal" data-machine="el-capitan" data-delay="0">
+                    <div class="mc-rank">#1</div>
+                    <div class="mc-image-container">
+                        <img src="assets/images/el-capitan/el-capitan.jpg"
+                             alt="El Capitan"
+                             class="mc-image"
+                             onerror="this.style.display='none'; this.parentElement.classList.add('mc-no-img')">
+                        <div class="mc-image-fallback">
+                            <div class="mc-fallback-icon">⬡</div>
+                            <span>EL CAPITAN</span>
+                        </div>
+                        <div class="mc-image-overlay"></div>
+                        <div class="mc-country-badge">🇺🇸 EUA</div>
+                    </div>
+                    <div class="mc-content">
+                        <div class="mc-header">
+                            <h3 class="mc-name">El Capitan</h3>
+                            <span class="mc-perf">1.809 PFLOPS</span>
+                        </div>
+                        <div class="mc-specs">
+                            <div class="spec-row">
+                                <span class="spec-label">Instituição</span>
+                                <span class="spec-value">DOE/NNSA/LLNL</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">Fabricante</span>
+                                <span class="spec-value">HPE</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">CPU</span>
+                                <span class="spec-value">AMD EPYC 4ª Gen</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">Acelerador</span>
+                                <span class="spec-value">AMD MI300A</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">Consumo</span>
+                                <span class="spec-value">29.684 kW</span>
+                            </div>
+                        </div>
+                        <div class="mc-tags">
+                            <span class="tag">IA</span>
+                            <span class="tag">Exascale</span>
+                            <span class="tag">Segurança Nacional</span>
+                        </div>
+                        <button class="mc-btn" onclick="scrollToDetail('el-capitan-detail')">
+                            Ver Detalhes <span>→</span>
+                        </button>
+                    </div>
+                    <div class="mc-glow mc-glow-blue"></div>
+                </div>
+
+                <!-- Card Harpia -->
+                <div class="machine-card reveal" data-machine="harpia" data-delay="0.15">
+                    <div class="mc-rank">#36</div>
+                    <div class="mc-image-container">
+                        <img src="assets/images/harpia/harpia.jpg"
+                             alt="Harpia"
+                             class="mc-image"
+                             onerror="this.style.display='none'; this.parentElement.classList.add('mc-no-img')">
+                        <div class="mc-image-fallback">
+                            <div class="mc-fallback-icon">◈</div>
+                            <span>HARPIA</span>
+                        </div>
+                        <div class="mc-image-overlay"></div>
+                        <div class="mc-country-badge">🇧🇷 Brasil</div>
+                    </div>
+                    <div class="mc-content">
+                        <div class="mc-header">
+                            <h3 class="mc-name">Harpia</h3>
+                            <span class="mc-perf">120.38 PFLOPS</span>
+                        </div>
+                        <div class="mc-specs">
+                            <div class="spec-row">
+                                <span class="spec-label">Instituição</span>
+                                <span class="spec-value">Petrobras</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">Fabricante</span>
+                                <span class="spec-value">Lenovo</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">CPU</span>
+                                <span class="spec-value">AMD EPYC 9354</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">Acelerador</span>
+                                <span class="spec-value">NVIDIA H100</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">Consumo</span>
+                                <span class="spec-value">1.840 kW</span>
+                            </div>
+                        </div>
+                        <div class="mc-tags">
+                            <span class="tag">Petróleo</span>
+                            <span class="tag">Sísmica</span>
+                            <span class="tag">IA Industrial</span>
+                        </div>
+                        <button class="mc-btn" onclick="scrollToDetail('harpia-detail')">
+                            Ver Detalhes <span>→</span>
+                        </button>
+                    </div>
+                    <div class="mc-glow mc-glow-cyan"></div>
+                </div>
+
+                <!-- Card Sunway TaihuLight -->
+                <div class="machine-card reveal" data-machine="sunway" data-delay="0.3">
+                    <div class="mc-rank">#24</div>
+                    <div class="mc-image-container">
+                        <img src="assets/images/sunway-taihulight/sunway-taihulight.jpg"
+                             alt="Sunway TaihuLight"
+                             class="mc-image"
+                             onerror="this.style.display='none'; this.parentElement.classList.add('mc-no-img')">
+                        <div class="mc-image-fallback">
+                            <div class="mc-fallback-icon">◎</div>
+                            <span>SUNWAY</span>
+                        </div>
+                        <div class="mc-image-overlay"></div>
+                        <div class="mc-country-badge">🇨🇳 China</div>
+                    </div>
+                    <div class="mc-content">
+                        <div class="mc-header">
+                            <h3 class="mc-name">Sunway TaihuLight</h3>
+                            <span class="mc-perf">93.01 PFLOPS</span>
+                        </div>
+                        <div class="mc-specs">
+                            <div class="spec-row">
+                                <span class="spec-label">Instituição</span>
+                                <span class="spec-value">NSCW — Wuxi</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">Fabricante</span>
+                                <span class="spec-value">NRCPC</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">CPU</span>
+                                <span class="spec-value">Sunway SW26010</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">Arquitetura</span>
+                                <span class="spec-value">Manycore MPP</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">Consumo</span>
+                                <span class="spec-value">15.371 kW</span>
+                            </div>
+                        </div>
+                        <div class="mc-tags">
+                            <span class="tag">Clima</span>
+                            <span class="tag">Chinesa 100%</span>
+                            <span class="tag">Manycore</span>
+                        </div>
+                        <button class="mc-btn" onclick="scrollToDetail('sunway-detail')">
+                            Ver Detalhes <span>→</span>
+                        </button>
+                    </div>
+                    <div class="mc-glow mc-glow-green"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===========================
+         SEÇÃO 4 — DETALHES DAS MÁQUINAS
+         =========================== -->
+
+    <!-- EL CAPITAN DETAIL -->
+    <section id="el-capitan-detail" class="section detail-section detail-blue">
+        <div class="container">
+            <div class="detail-layout reveal">
+                <div class="detail-media">
+                    <div class="detail-img-stack">
+                        <div class="detail-main-img">
+                            <img src="assets/images/el-capitan/el-capitan.jpg"
+                                 alt="El Capitan"
+                                 onerror="this.style.display='none'; this.parentElement.classList.add('no-img-fallback')">
+                            <div class="detail-main-fallback">
+                                <div class="dfallback-icon">⬡</div>
+                                <span>EL CAPITAN</span>
+                                <small>HPE Cray EX255a</small>
+                            </div>
+                        </div>
+                        <div class="detail-sub-imgs">
+                            <div class="detail-sub-img">
+                                <img src="assets/images/el-capitan/amd-epyc.jpg"
+                                     alt="AMD EPYC"
+                                     onerror="this.style.display='none'; this.parentElement.classList.add('sub-no-img')">
+                                <div class="sub-fallback">AMD EPYC</div>
+                                <span class="sub-label">CPU</span>
+                            </div>
+                            <div class="detail-sub-img">
+                                <img src="assets/images/el-capitan/amd-instinct-mi300a.jpg"
+                                     alt="AMD Instinct MI300A"
+                                     onerror="this.style.display='none'; this.parentElement.classList.add('sub-no-img')">
+                                <div class="sub-fallback">MI300A</div>
+                                <span class="sub-label">Acelerador</span>
+                            </div>
+                            <div class="detail-sub-img">
+                                <img src="assets/images/el-capitan/hpe-cray.jpg"
+                                     alt="HPE Cray"
+                                     onerror="this.style.display='none'; this.parentElement.classList.add('sub-no-img')">
+                                <div class="sub-fallback">HPE Cray</div>
+                                <span class="sub-label">Infraestrutura</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-info">
+                    <div class="detail-badge-row">
+                        <span class="detail-rank">#1 TOP500</span>
+                        <span class="detail-country">🇺🇸 Estados Unidos</span>
+                    </div>
+                    <h2 class="detail-title">El <span class="accent">Capitan</span></h2>
+                    <p class="detail-desc">
+                        O El Capitan representa a supercomputação exascale moderna, utilizando CPUs
+                        AMD EPYC e aceleradores AMD Instinct MI300A para processamento paralelo
+                        massivo. É o primeiro supercomputador a superar a barreira do exaFLOP,
+                        processando mais de 1,8 quintilhões de operações por segundo.
+                    </p>
+
+                    <div class="detail-specs-grid">
+                        <div class="dspec-card">
+                            <span class="dspec-label">Instituição</span>
+                            <span class="dspec-value">DOE/NNSA/LLNL</span>
+                        </div>
+                        <div class="dspec-card">
+                            <span class="dspec-label">Fabricante</span>
+                            <span class="dspec-value">HPE</span>
+                        </div>
+                        <div class="dspec-card">
+                            <span class="dspec-label">Arquitetura</span>
+                            <span class="dspec-value">HPE Cray EX255a</span>
+                        </div>
+                        <div class="dspec-card">
+                            <span class="dspec-label">CPU</span>
+                            <span class="dspec-value">AMD 4th Gen EPYC 24C</span>
+                        </div>
+                        <div class="dspec-card">
+                            <span class="dspec-label">Acelerador</span>
+                            <span class="dspec-value">AMD Instinct MI300A</span>
+                        </div>
+                        <div class="dspec-card">
+                            <span class="dspec-label">Interconexão</span>
+                            <span class="dspec-value">Slingshot-11</span>
+                        </div>
+                        <div class="dspec-card highlight">
+                            <span class="dspec-label">Desempenho</span>
+                            <span class="dspec-value accent-text">1.809 PFLOPS</span>
+                        </div>
+                        <div class="dspec-card">
+                            <span class="dspec-label">Consumo</span>
+                            <span class="dspec-value">29.684 kW</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-perf-bar">
+                        <div class="dpb-header">
+                            <span>Desempenho Relativo</span>
+                            <span class="accent-text">100%</span>
+                        </div>
+                        <div class="dpb-track">
+                            <div class="dpb-fill blue-fill" data-width="100"></div>
+                        </div>
+                    </div>
+
+                    <div class="detail-apps">
+                        <span class="detail-apps-label">Aplicações:</span>
+                        <span class="tag">IA</span>
+                        <span class="tag">Simulações Científicas</span>
+                        <span class="tag">Segurança Nacional</span>
+                        <span class="tag">Ciência de Dados</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Arquitetura técnica -->
+            <div class="arch-section reveal">
+                <h3 class="arch-title">Arquitetura <span class="accent">Técnica</span></h3>
+                <div class="arch-diagram">
+                    <div class="arch-node arch-cpu">
+                        <img src="assets/images/el-capitan/amd-epyc.jpg"
+                             alt="AMD EPYC"
+                             onerror="this.style.display='none'">
+                        <div class="arch-node-label">AMD EPYC 24C</div>
+                        <div class="arch-node-sub">CPU Host</div>
+                    </div>
+                    <div class="arch-arrow">⟶</div>
+                    <div class="arch-node arch-mem">
+                        <div class="arch-node-icon">▦</div>
+                        <div class="arch-node-label">HBM3e Memory</div>
+                        <div class="arch-node-sub">Memória Unificada</div>
+                    </div>
+                    <div class="arch-arrow">⟶</div>
+                    <div class="arch-node arch-gpu">
+                        <img src="assets/images/el-capitan/amd-instinct-mi300a.jpg"
+                             alt="AMD MI300A"
+                             onerror="this.style.display='none'">
+                        <div class="arch-node-label">AMD MI300A</div>
+                        <div class="arch-node-sub">Acelerador APU</div>
+                    </div>
+                    <div class="arch-arrow">⟶</div>
+                    <div class="arch-node arch-net">
+                        <div class="arch-node-icon">◈</div>
+                        <div class="arch-node-label">Slingshot-11</div>
+                        <div class="arch-node-sub">Rede 200 Gb/s</div>
+                    </div>
+                </div>
+                <p class="arch-note">
+                    O MI300A é um APU revolucionário que unifica CPU, GPU e HBM no mesmo die,
+                    eliminando a latência de transferência de dados entre processador e acelerador —
+                    ponto crítico para workloads de IA.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- HARPIA DETAIL -->
+    <section id="harpia-detail" class="section detail-section detail-cyan">
+        <div class="container">
+            <div class="detail-layout reveal detail-reverse">
+                <div class="detail-info">
+                    <div class="detail-badge-row">
+                        <span class="detail-rank">#36 TOP500</span>
+                        <span class="detail-country">🇧🇷 Brasil</span>
+                    </div>
+                    <h2 class="detail-title"><span class="accent-cyan">Harpia</span></h2>
+                    <p class="detail-desc">
+                        O Harpia possui aplicação industrial direta na Petrobras, auxiliando em
+                        simulações sísmicas e análise massiva de dados geológicos. É o maior
+                        supercomputador do hemisfério sul e representa a aposta brasileira na
+                        soberania tecnológica para exploração energética.
+                    </p>
+
+                    <div class="detail-specs-grid">
+                        <div class="dspec-card">
+                            <span class="dspec-label">Instituição</span>
+                            <span class="dspec-value">Petrobras</span>
+                        </div>
+                        <div class="dspec-card">
+                            <span class="dspec-label">Fabricante</span>
+                            <span class="dspec-value">Lenovo</span>
+                        </div>
+                        <div class="dspec-card">
+                            <span class="dspec-label">Arquitetura</span>
+                            <span class="dspec-value">ThinkSystem SR675 V3</span>
+                        </div>
+                        <div class="dspec-card">
+                            <span class="dspec-label">CPU</span>
+                            <span class="dspec-value">AMD EPYC 9354 32C</span>
+                        </div>
+                        <div class="dspec-card">
+                            <span class="dspec-label">GPU</span>
+                            <span class="dspec-value">NVIDIA H100 SXM5</span>
+                        </div>
+                        <div class="dspec-card">
+                            <span class="dspec-label">Interconexão</span>
+                            <span class="dspec-value">InfiniBand NDR</span>
+                        </div>
+                        <div class="dspec-card highlight">
+                            <span class="dspec-label">Desempenho</span>
+                            <span class="dspec-value accent-cyan-text">120.38 PFLOPS</span>
+                        </div>
+                        <div class="dspec-card">
+                            <span class="dspec-label">Consumo</span>
+                            <span class="dspec-value">1.840 kW</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-perf-bar">
+                        <div class="dpb-header">
+                            <span>Desempenho Relativo ao #1</span>
+                            <span class="accent-cyan-text">6.7%</span>
+                        </div>
+                        <div class="dpb-track">
+                            <div class="dpb-fill cyan-fill" data-width="6.7"></div>
+                        </div>
+                    </div>
+
+                    <div class="detail-apps">
+                        <span class="detail-apps-label">Aplicações:</span>
+                        <span class="tag">Exploração de Petróleo</span>
+                        <span class="tag">Análises Sísmicas</span>
+                        <span class="tag">Modelagem Geológica</span>
+                        <span class="tag">IA Industrial</span>
+                    </div>
+                </div>
+
+                <div class="detail-media">
+                    <div class="detail-img-stack">
+                        <div class="detail-main-img">
+                            <img src="assets/images/harpia/harpia.jpg"
+                                 alt="Harpia"
+                                 onerror="this.style.display='none'; this.parentElement.classList.add('no-img-fallback')">
+                            <div class="detail-main-fallback">
+                                <div class="dfallback-icon cyan-icon">◈</div>
+                                <span>HARPIA</span>
+                                <small>Lenovo ThinkSystem SR675 V3</small>
+                            </div>
+                        </div>
+                        <div class="detail-sub-imgs">
+                            <div class="detail-sub-img">
+                                <img src="assets/images/harpia/petrobras.jpg"
+                                     alt="Petrobras"
+                                     onerror="this.style.display='none'; this.parentElement.classList.add('sub-no-img')">
+                                <div class="sub-fallback">Petrobras</div>
+                                <span class="sub-label">Operador</span>
+                            </div>
+                            <div class="detail-sub-img">
+                                <img src="assets/images/harpia/nvidia-h100.jpg"
+                                     alt="NVIDIA H100"
+                                     onerror="this.style.display='none'; this.parentElement.classList.add('sub-no-img')">
+                                <div class="sub-fallback">H100</div>
+                                <span class="sub-label">GPU</span>
+                            </div>
+                            <div class="detail-sub-img">
+                                <img src="assets/images/harpia/amd-epyc-9354.jpg"
+                                     alt="AMD EPYC 9354"
+                                     onerror="this.style.display='none'; this.parentElement.classList.add('sub-no-img')">
+                                <div class="sub-fallback">EPYC 9354</div>
+                                <span class="sub-label">CPU</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contexto Brasil -->
+            <div class="arch-section reveal">
+                <h3 class="arch-title">Impacto <span class="accent-cyan">Nacional</span></h3>
+                <div class="impact-grid">
+                    <div class="impact-card">
+                        <span class="impact-icon">🛢️</span>
+                        <h4>Exploração de Petróleo</h4>
+                        <p>O Harpia processa dados sísmicos 3D/4D para identificar reservatórios
+                        de petróleo no pré-sal, reduzindo riscos de perfuração e custos operacionais em bilhões de dólares.</p>
+                    </div>
+                    <div class="impact-card">
+                        <span class="impact-icon">🧠</span>
+                        <h4>Machine Learning Industrial</h4>
+                        <p>Modelos de IA treinados no Harpia detectam padrões em dados geofísicos,
+                        preveem falhas de equipamentos e otimizam rotas de escoamento de produção.</p>
+                    </div>
+                    <div class="impact-card">
+                        <span class="impact-icon">🇧🇷</span>
+                        <h4>Soberania Tecnológica</h4>
+                        <p>Estar no TOP500 posiciona o Brasil entre as nações com capacidade
+                        computacional de ponta, essencial para competitividade científica e industrial global.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SUNWAY DETAIL -->
+    <section id="sunway-detail" class="section detail-section detail-green">
+        <div class="container">
+            <div class="detail-layout reveal">
+                <div class="detail-media">
+                    <div class="detail-img-stack">
+                        <div class="detail-main-img">
+                            <img src="assets/images/sunway-taihulight/sunway-taihulight.jpg"
+                                 alt="Sunway TaihuLight"
+                                 onerror="this.style.display='none'; this.parentElement.classList.add('no-img-fallback')">
+                            <div class="detail-main-fallback">
+                                <div class="dfallback-icon green-icon">◎</div>
+                                <span>SUNWAY</span>
+                                <small>TAIHULIGHT</small>
+                            </div>
+                        </div>
+                        <div class="detail-sub-imgs">
+                            <div class="detail-sub-img">
+                                <img src="assets/images/sunway-taihulight/sunway-sw26010-diagram.png"
+                                     alt="SW26010 Diagrama"
+                                     onerror="this.style.display='none'; this.parentElement.classList.add('sub-no-img')">
+                                <div class="sub-fallback">SW26010</div>
+                                <span class="sub-label">Processador</span>
+                            </div>
+                            <div class="detail-sub-img">
+                                <img src="assets/images/sunway-taihulight/wuxi-center.jpg"
+                                     alt="Centro Wuxi"
+                                     onerror="this.style.display='none'; this.parentElement.classList.add('sub-no-img')">
+                                <div class="sub-fallback">Wuxi</div>
+                                <span class="sub-label">Data Center</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-info">
+                    <div class="detail-badge-row">
+                        <span class="detail-rank">#24 TOP500</span>
+                        <span class="detail-country">🇨🇳 China</span>
+                    </div>
+                    <h2 class="detail-title">Sunway <span class="accent-green">TaihuLight</span></h2>
+                    <p class="detail-desc">
+                        O Sunway TaihuLight destaca-se pela utilização de tecnologia chinesa própria
+                        e arquitetura massivamente paralela. Foi o #1 do mundo por dois anos consecutivos
+                        (2016–2017), e sua singularidade está no processador SW26010 — 100% desenvolvido
+                        na China, com 260 núcleos por chip.
+                    </p>
+
+                    <div class="detail-specs-grid">
+                        <div class="dspec-card">
+                            <span class="dspec-label">Instituição</span>
+                            <span class="dspec-value">NSCW, Wuxi</span>
+                        </div>
+                        <div class="dspec-card">
+                            <span class="dspec-label">Fabricante</span>
+                            <span class="dspec-value">NRCPC</span>
+                        </div>
+                        <div class="dspec-card">
+                            <span class="dspec-label">Arquitetura</span>
+                            <span class="dspec-value">Sunway MPP</span>
+                        </div>
+                        <div class="dspec-card">
+                            <span class="dspec-label">CPU</span>
+                            <span class="dspec-value">Sunway SW26010 260C</span>
+                        </div>
+                        <div class="dspec-card">
+                            <span class="dspec-label">Clock</span>
+                            <span class="dspec-value">1.45 GHz</span>
+                        </div>
+                        <div class="dspec-card">
+                            <span class="dspec-label">Total de Núcleos</span>
+                            <span class="dspec-value">10,649,600</span>
+                        </div>
+                        <div class="dspec-card highlight">
+                            <span class="dspec-label">Desempenho</span>
+                            <span class="dspec-value accent-green-text">93.01 PFLOPS</span>
+                        </div>
+                        <div class="dspec-card">
+                            <span class="dspec-label">Consumo</span>
+                            <span class="dspec-value">15.371 kW</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-perf-bar">
+                        <div class="dpb-header">
+                            <span>Desempenho Relativo ao #1</span>
+                            <span class="accent-green-text">5.1%</span>
+                        </div>
+                        <div class="dpb-track">
+                            <div class="dpb-fill green-fill" data-width="5.1"></div>
+                        </div>
+                    </div>
+
+                    <div class="detail-apps">
+                        <span class="detail-apps-label">Aplicações:</span>
+                        <span class="tag">Previsão Climática</span>
+                        <span class="tag">Engenharia</span>
+                        <span class="tag">Pesquisas Científicas</span>
+                        <span class="tag">Computação Paralela</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Arquitetura SW26010 -->
+            <div class="arch-section reveal">
+                <h3 class="arch-title">Processador <span class="accent-green">SW26010</span> — Arquitetura Manycore</h3>
+                <div class="sw26010-diagram">
+                    <div class="sw-core-group">
+                        <div class="sw-mpc">Management Processing Core (MPC)</div>
+                        <div class="sw-cpc-grid">
+                            <div class="sw-cpc-label">64 × Computing Processing Cores (CPCs)</div>
+                            <div class="sw-cores-vis" id="sw-cores-vis">
+                                <!-- Gerado via JS -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sw-diagram-info">
+                        <div class="sw-info-item">
+                            <span class="sw-info-label">Chips por Nó</span>
+                            <span class="sw-info-value">4</span>
+                        </div>
+                        <div class="sw-info-item">
+                            <span class="sw-info-label">Núcleos por Chip</span>
+                            <span class="sw-info-value">260</span>
+                        </div>
+                        <div class="sw-info-item">
+                            <span class="sw-info-label">Total de Nós</span>
+                            <span class="sw-info-value">40.960</span>
+                        </div>
+                        <div class="sw-info-item">
+                            <span class="sw-info-label">Total de Núcleos</span>
+                            <span class="sw-info-value">10,6M</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="arch-note">
+                    A arquitetura manycore do SW26010 coloca todos os núcleos no mesmo chip com
+                    memória de rascunho local, eliminando tráfego de cache entre chips — filosofia
+                    radicalmente diferente das arquiteturas x86 ocidentais.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===========================
+         SEÇÃO 5 — COMPARAÇÃO
+         =========================== -->
+    <section id="comparacao" class="section section-dark">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">// 03 — ANÁLISE COMPARATIVA</span>
+                <h2 class="section-title">Comparação <span class="accent">das Máquinas</span></h2>
+                <p class="section-subtitle">
+                    Três arquiteturas distintas, três filosofias de engenharia, um objetivo comum:
+                    alcançar o máximo desempenho computacional.
+                </p>
+            </div>
+
+            <!-- Barras de desempenho -->
+            <div class="perf-comparison reveal">
+                <h3 class="comp-subtitle">Desempenho (PFLOPS)</h3>
+                <div class="perf-bars">
+                    <div class="perf-bar-item">
+                        <div class="pbi-header">
+                            <span class="pbi-name">El Capitan</span>
+                            <span class="pbi-value accent-text">1.809 PFLOPS</span>
+                        </div>
+                        <div class="pbi-track">
+                            <div class="pbi-fill pbi-blue" data-width="100">
+                                <span class="pbi-label">100%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="perf-bar-item">
+                        <div class="pbi-header">
+                            <span class="pbi-name">Harpia</span>
+                            <span class="pbi-value accent-cyan-text">120.38 PFLOPS</span>
+                        </div>
+                        <div class="pbi-track">
+                            <div class="pbi-fill pbi-cyan" data-width="6.7">
+                                <span class="pbi-label">6.7%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="perf-bar-item">
+                        <div class="pbi-header">
+                            <span class="pbi-name">Sunway TaihuLight</span>
+                            <span class="pbi-value accent-green-text">93.01 PFLOPS</span>
+                        </div>
+                        <div class="pbi-track">
+                            <div class="pbi-fill pbi-green" data-width="5.1">
+                                <span class="pbi-label">5.1%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabela comparativa -->
+            <div class="comp-table-wrapper reveal">
+                <table class="comp-table">
+                    <thead>
+                        <tr>
+                            <th>Critério</th>
+                            <th class="th-blue">El Capitan</th>
+                            <th class="th-cyan">Harpia</th>
+                            <th class="th-green">Sunway TaihuLight</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ranking</td>
+                            <td class="td-blue"><strong>#1</strong></td>
+                            <td class="td-cyan">#36</td>
+                            <td class="td-green">#24</td>
+                        </tr>
+                        <tr>
+                            <td>País</td>
+                            <td>🇺🇸 EUA</td>
+                            <td>🇧🇷 Brasil</td>
+                            <td>🇨🇳 China</td>
+                        </tr>
+                        <tr>
+                            <td>Fabricante</td>
+                            <td>HPE</td>
+                            <td>Lenovo</td>
+                            <td>NRCPC</td>
+                        </tr>
+                        <tr>
+                            <td>CPU</td>
+                            <td>AMD EPYC 4ª Gen</td>
+                            <td>AMD EPYC 9354</td>
+                            <td>Sunway SW26010</td>
+                        </tr>
+                        <tr>
+                            <td>Acelerador</td>
+                            <td class="td-blue">AMD MI300A</td>
+                            <td class="td-cyan">NVIDIA H100</td>
+                            <td class="td-green">Manycore nativo</td>
+                        </tr>
+                        <tr>
+                            <td>Desempenho</td>
+                            <td class="td-blue"><strong>1.809 PFLOPS</strong></td>
+                            <td class="td-cyan">120.38 PFLOPS</td>
+                            <td class="td-green">93.01 PFLOPS</td>
+                        </tr>
+                        <tr>
+                            <td>Consumo</td>
+                            <td>29.684 kW</td>
+                            <td class="td-cyan td-best">1.840 kW ★</td>
+                            <td>15.371 kW</td>
+                        </tr>
+                        <tr>
+                            <td>Foco Principal</td>
+                            <td>IA + Seg. Nacional</td>
+                            <td>Óleo e Gás</td>
+                            <td>Clima + Ciência</td>
+                        </tr>
+                        <tr>
+                            <td>IA Nativa</td>
+                            <td class="td-blue">✓ Alta</td>
+                            <td class="td-cyan">✓ Alta</td>
+                            <td class="td-green">○ Moderada</td>
+                        </tr>
+                        <tr>
+                            <td>Eficiência (PFLOPS/kW)</td>
+                            <td>60.9</td>
+                            <td class="td-cyan td-best">65.4 ★</td>
+                            <td>6.1</td>
+                        </tr>
+                        <tr>
+                            <td>Tecnologia Própria</td>
+                            <td>✗ AMD/HPE</td>
+                            <td>✗ AMD/NVIDIA</td>
+                            <td class="td-green">✓ 100% Chinesa</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Energia vs Desempenho -->
+            <div class="energy-chart reveal">
+                <h3 class="comp-subtitle">Eficiência Energética (PFLOPS por kW)</h3>
+                <div class="energy-bars">
+                    <div class="eb-item">
+                        <span class="eb-name">El Capitan</span>
+                        <div class="eb-track">
+                            <div class="eb-fill eb-blue" data-width="93">
+                                <span>60.9</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="eb-item">
+                        <span class="eb-name">Harpia</span>
+                        <div class="eb-track">
+                            <div class="eb-fill eb-cyan" data-width="100">
+                                <span>65.4 ★</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="eb-item">
+                        <span class="eb-name">Sunway TaihuLight</span>
+                        <div class="eb-track">
+                            <div class="eb-fill eb-green" data-width="9.3">
+                                <span>6.1</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="chart-note">★ Harpia é o mais eficiente energeticamente entre os três analisados</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===========================
+         SEÇÃO 6 — SIMULADOR
+         =========================== -->
+    <section id="simulador" class="section simulator-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">// 04 — EXPERIÊNCIA INTERATIVA</span>
+                <h2 class="section-title">Simulador de <span class="accent">Processamento Paralelo</span></h2>
+                <p class="section-subtitle">
+                    Selecione uma tarefa e observe como um supercomputador distribui o processamento
+                    entre milhares de núcleos em tempo real.
+                </p>
+            </div>
+
+            <div class="simulator-wrapper reveal">
+                <!-- Painel de controle -->
+                <div class="sim-control-panel">
+                    <div class="sim-panel-header">
+                        <span class="sim-panel-title">◈ PAINEL DE CONTROLE</span>
+                        <span class="sim-status" id="sim-status-badge">AGUARDANDO</span>
+                    </div>
+
+                    <div class="sim-machine-select">
+                        <label class="sim-label">Máquina:</label>
+                        <div class="sim-machines">
+                            <button class="sim-machine-btn active" data-machine="el-capitan">El Capitan</button>
+                            <button class="sim-machine-btn" data-machine="harpia">Harpia</button>
+                            <button class="sim-machine-btn" data-machine="sunway">Sunway</button>
+                        </div>
+                    </div>
+
+                    <div class="sim-tasks">
+                        <label class="sim-label">Selecione uma Tarefa:</label>
+                        <div class="sim-task-grid">
+                            <button class="sim-task-btn" data-task="ia" data-icon="◈">
+                                <span class="stb-icon">◈</span>
+                                <span>Inteligência<br>Artificial</span>
+                            </button>
+                            <button class="sim-task-btn" data-task="clima" data-icon="◉">
+                                <span class="stb-icon">◉</span>
+                                <span>Previsão<br>Climática</span>
+                            </button>
+                            <button class="sim-task-btn" data-task="petroleo" data-icon="◎">
+                                <span class="stb-icon">◎</span>
+                                <span>Exploração<br>de Petróleo</span>
+                            </button>
+                            <button class="sim-task-btn" data-task="dados" data-icon="◐">
+                                <span class="stb-icon">◐</span>
+                                <span>Ciência<br>de Dados</span>
+                            </button>
+                            <button class="sim-task-btn" data-task="simulacao" data-icon="◑">
+                                <span class="stb-icon">◑</span>
+                                <span>Simulação<br>Científica</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="sim-metrics">
+                        <div class="sim-metric">
+                            <span class="sm-label">CPU Usage</span>
+                            <div class="sm-bar-track">
+                                <div class="sm-bar-fill sm-cpu" id="cpu-bar"></div>
+                            </div>
+                            <span class="sm-value" id="cpu-val">0%</span>
+                        </div>
+                        <div class="sim-metric">
+                            <span class="sm-label">GPU Usage</span>
+                            <div class="sm-bar-track">
+                                <div class="sm-bar-fill sm-gpu" id="gpu-bar"></div>
+                            </div>
+                            <span class="sm-value" id="gpu-val">0%</span>
+                        </div>
+                        <div class="sim-metric">
+                            <span class="sm-label">Memória</span>
+                            <div class="sm-bar-track">
+                                <div class="sm-bar-fill sm-mem" id="mem-bar"></div>
+                            </div>
+                            <span class="sm-value" id="mem-val">0%</span>
+                        </div>
+                        <div class="sim-metric">
+                            <span class="sm-label">Rede</span>
+                            <div class="sm-bar-track">
+                                <div class="sm-bar-fill sm-net" id="net-bar"></div>
+                            </div>
+                            <span class="sm-value" id="net-val">0 GB/s</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Display principal do simulador -->
+                <div class="sim-main">
+                    <!-- Núcleos animados -->
+                    <div class="sim-cores-area">
+                        <div class="sim-cores-header">
+                            <span>◦ NÚCLEOS DE PROCESSAMENTO</span>
+                            <span class="sim-cores-count" id="cores-count">0 ativos</span>
+                        </div>
+                        <div class="sim-cores-grid" id="cores-grid">
+                            <!-- Gerado via JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Indicadores digitais -->
+                    <div class="sim-digital-metrics">
+                        <div class="sdm-card sdm-pflops">
+                            <span class="sdm-label">PFLOPS</span>
+                            <span class="sdm-value" id="sdm-pflops">0.000</span>
+                            <div class="sdm-spark" id="pflops-spark"></div>
+                        </div>
+                        <div class="sdm-card sdm-temp">
+                            <span class="sdm-label">Temperatura</span>
+                            <span class="sdm-value" id="sdm-temp">22°C</span>
+                            <div class="temp-indicator" id="temp-indicator"></div>
+                        </div>
+                        <div class="sdm-card sdm-power">
+                            <span class="sdm-label">Energia</span>
+                            <span class="sdm-value" id="sdm-power">0 kW</span>
+                        </div>
+                        <div class="sdm-card sdm-data">
+                            <span class="sdm-label">Transfer. Dados</span>
+                            <span class="sdm-value" id="sdm-data">0 TB/s</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comparação de escalas -->
+                <div class="sim-comparison">
+                    <div class="sim-comp-header">◦ COMPARAÇÃO DE ESCALA</div>
+                    <div class="sim-comp-bars">
+                        <div class="scb-item">
+                            <div class="scb-icon">💻</div>
+                            <div class="scb-info">
+                                <span class="scb-name">Notebook</span>
+                                <div class="scb-bar-track">
+                                    <div class="scb-bar" id="nb-bar" style="width:0%"></div>
+                                </div>
+                                <span class="scb-val" id="nb-val">~0.01 TFLOPS</span>
+                            </div>
+                        </div>
+                        <div class="scb-item">
+                            <div class="scb-icon">🖥️</div>
+                            <div class="scb-info">
+                                <span class="scb-name">Servidor</span>
+                                <div class="scb-bar-track">
+                                    <div class="scb-bar" id="srv-bar" style="width:0%"></div>
+                                </div>
+                                <span class="scb-val" id="srv-val">~0.1 PFLOPS</span>
+                            </div>
+                        </div>
+                        <div class="scb-item">
+                            <div class="scb-icon">⬡</div>
+                            <div class="scb-info">
+                                <span class="scb-name">Supercomputador</span>
+                                <div class="scb-bar-track">
+                                    <div class="scb-bar scb-super" id="sup-bar" style="width:0%"></div>
+                                </div>
+                                <span class="scb-val" id="sup-val">0 PFLOPS</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sim-log" id="sim-log">
+                        <p class="log-entry">◦ Sistema pronto. Selecione uma tarefa para iniciar a simulação.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===========================
+         SEÇÃO 7 — ENGENHARIA DE COMPUTAÇÃO
+         =========================== -->
+    <section id="engenharia" class="section">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">// 05 — FUNDAMENTOS</span>
+                <h2 class="section-title">Relação com <span class="accent">Engenharia de Computação</span></h2>
+                <p class="section-subtitle">
+                    A supercomputação é a síntese de todas as áreas da Engenharia de Computação
+                    aplicadas no limite do que é fisicamente possível.
+                </p>
+            </div>
+
+            <div class="eng-pillars reveal">
+                <div class="eng-pillar">
+                    <div class="ep-icon ep-arch">▦</div>
+                    <h4>Arquitetura Computacional</h4>
+                    <p>Pipeline de execução, hierarquia de memória, NUMA, SIMD, throughput vs latência — todos os conceitos se amplificam em escala de exaFLOPs.</p>
+                    <div class="ep-examples">
+                        <span class="ep-tag">RISC</span>
+                        <span class="ep-tag">Manycore</span>
+                        <span class="ep-tag">APU/GPU</span>
+                        <span class="ep-tag">HBM</span>
+                    </div>
+                </div>
+                <div class="eng-pillar">
+                    <div class="ep-icon ep-para">⬡</div>
+                    <h4>Paralelismo</h4>
+                    <p>ILP, TLP, DLP e paralelismo de dados em escala de milhões de threads simultâneas. MPI, OpenMP e CUDA definem como o código é distribuído.</p>
+                    <div class="ep-examples">
+                        <span class="ep-tag">MPI</span>
+                        <span class="ep-tag">OpenMP</span>
+                        <span class="ep-tag">CUDA</span>
+                        <span class="ep-tag">ROCm</span>
+                    </div>
+                </div>
+                <div class="eng-pillar">
+                    <div class="ep-icon ep-net">◈</div>
+                    <h4>Redes de Alta Velocidade</h4>
+                    <p>Interconexão de nós com latências abaixo de 1µs e largura de banda acima de 400 Gb/s. InfiniBand e Slingshot definem o backbone.</p>
+                    <div class="ep-examples">
+                        <span class="ep-tag">InfiniBand</span>
+                        <span class="ep-tag">Slingshot</span>
+                        <span class="ep-tag">RDMA</span>
+                        <span class="ep-tag">Fat-Tree</span>
+                    </div>
+                </div>
+                <div class="eng-pillar">
+                    <div class="ep-icon ep-ia">◉</div>
+                    <h4>Inteligência Artificial</h4>
+                    <p>Supercomputadores são a infraestrutura que torna possível LLMs com trilhões de parâmetros, modelos de difusão e IA generativa em escala.</p>
+                    <div class="ep-examples">
+                        <span class="ep-tag">LLM</span>
+                        <span class="ep-tag">Tensor Cores</span>
+                        <span class="ep-tag">FP8/FP16</span>
+                        <span class="ep-tag">XLA</span>
+                    </div>
+                </div>
+                <div class="eng-pillar">
+                    <div class="ep-icon ep-data">◎</div>
+                    <h4>Ciência de Dados</h4>
+                    <p>Análise de petabytes requer pipelines de I/O paralelo, sistemas de arquivos distribuídos como Lustre e GPFS com centenas de GB/s de throughput.</p>
+                    <div class="ep-examples">
+                        <span class="ep-tag">Lustre FS</span>
+                        <span class="ep-tag">HDF5</span>
+                        <span class="ep-tag">Spark HPC</span>
+                        <span class="ep-tag">RAPIDS</span>
+                    </div>
+                </div>
+                <div class="eng-pillar">
+                    <div class="ep-icon ep-energy">⚡</div>
+                    <h4>Eficiência Energética</h4>
+                    <p>Green500 mede GFLOPS/W. Refrigeração líquida, chips 3D e DSE são determinantes para viabilidade econômica e ambiental dos sistemas.</p>
+                    <div class="ep-examples">
+                        <span class="ep-tag">Refrigeração Líq.</span>
+                        <span class="ep-tag">Power Capping</span>
+                        <span class="ep-tag">DVFS</span>
+                        <span class="ep-tag">Green500</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===========================
+         SEÇÃO 8 — VISITA AO CENTRO
+         =========================== -->
+    <section id="visita" class="section section-dark visit-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">// 06 — RELATO DE VISITA</span>
+                <h2 class="section-title">Visita ao Centro de <span class="accent">Supercomputação</span></h2>
+            </div>
+
+            <div class="visit-layout reveal">
+                <div class="visit-content">
+                    <div class="visit-quote">
+                        <span class="quote-mark">"</span>
+                        <blockquote>
+                            Após a visita ao Centro de Supercomputação, foi possível compreender
+                            melhor como a computação de alto desempenho depende da integração entre
+                            hardware, software, energia, refrigeração e processamento paralelo.
+                        </blockquote>
+                        <span class="quote-mark right">"</span>
+                    </div>
+
+                    <div class="visit-insights">
+                        <div class="vi-item">
+                            <div class="vi-icon">🔧</div>
+                            <div class="vi-text">
+                                <h4>Hardware em Escala Real</h4>
+                                <p>Ver fisicamente os racks de servidores permitiu compreender a dimensão real
+                                da infraestrutura necessária — não são computadores individuais, mas organismos
+                                computacionais integrados.</p>
+                            </div>
+                        </div>
+                        <div class="vi-item">
+                            <div class="vi-icon">❄️</div>
+                            <div class="vi-text">
+                                <h4>Sistemas de Refrigeração</h4>
+                                <p>A refrigeração é tão crítica quanto o processamento. Sistemas de imersão
+                                dielétrica, water cooling e controle ambiental precisam de engenharia
+                                sofisticada para operar 24/7.</p>
+                            </div>
+                        </div>
+                        <div class="vi-item">
+                            <div class="vi-icon">⚡</div>
+                            <div class="vi-text">
+                                <h4>Infraestrutura de Energia</h4>
+                                <p>Dezenas de megawatts de energia, sistemas de UPS, geradores de backup
+                                e redundância elétrica tripla garantem que nunca haja interrupção
+                                nos cálculos críticos em andamento.</p>
+                            </div>
+                        </div>
+                        <div class="vi-item">
+                            <div class="vi-icon">🧑‍💻</div>
+                            <div class="vi-text">
+                                <h4>Operação e Software</h4>
+                                <p>Job schedulers (Slurm, PBS), sistemas de monitoramento e orquestração
+                                de workloads transformam o hardware em uma plataforma produtiva
+                                para centenas de pesquisadores simultâneos.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="visit-visual">
+                    <div class="visit-datacenter">
+                        <img src="assets/images/sunway-taihulight/wuxi-center.jpg"
+                             alt="Centro de Supercomputação"
+                             class="visit-img"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                        <div class="visit-img-fallback">
+                            <div class="datacenter-art">
+                                <div class="dc-rack" style="--delay:0s"></div>
+                                <div class="dc-rack" style="--delay:0.1s"></div>
+                                <div class="dc-rack" style="--delay:0.2s"></div>
+                                <div class="dc-rack" style="--delay:0.3s"></div>
+                                <div class="dc-rack" style="--delay:0.4s"></div>
+                                <div class="dc-floor"></div>
+                                <div class="dc-ceiling"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===========================
+         RODAPÉ
+         =========================== -->
+    <footer id="footer" class="footer">
+        <div class="footer-grid-overlay"></div>
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <span class="logo-icon">⬡</span>
+                        <span class="logo-text">TOP<strong>500</strong></span>
+                    </div>
+                    <p class="footer-tagline">
+                        Supercomputadores Mais Poderosos do Mundo
+                    </p>
+                    <p class="footer-course">
+                        Engenharia de Computação — Arquitetura e Organização de Computadores
+                    </p>
+                </div>
+
+                <div class="footer-team">
+                    <h4 class="footer-section-title">Integrantes</h4>
+                    <ul class="team-list">
+                        <li>Integrante 1</li>
+                        <li>Integrante 2</li>
+                        <li>Integrante 3</li>
+                        <li>Integrante 4</li>
+                    </ul>
+                </div>
+
+                <div class="footer-refs">
+                    <h4 class="footer-section-title">Referências</h4>
+                    <ul class="ref-list">
+                        <li><span class="ref-bullet">◦</span> TOP500.org — top500.org</li>
+                        <li><span class="ref-bullet">◦</span> AMD — amd.com</li>
+                        <li><span class="ref-bullet">◦</span> NVIDIA — nvidia.com</li>
+                        <li><span class="ref-bullet">◦</span> HPE — hpe.com</li>
+                        <li><span class="ref-bullet">◦</span> Lenovo — lenovo.com</li>
+                        <li><span class="ref-bullet">◦</span> Petrobras — petrobras.com.br</li>
+                        <li><span class="ref-bullet">◦</span> LLNL — llnl.gov</li>
+                        <li><span class="ref-bullet">◦</span> NSCW — nsccwx.cn</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-divider"></div>
+
+            <div class="footer-bottom">
+                <div class="footer-ai-note">
+                    <span class="ai-icon">◈</span>
+                    <p>
+                        Ferramentas de IA foram utilizadas como apoio na organização das informações
+                        e estruturação visual do projeto, com verificação dos dados em fontes confiáveis.
+                    </p>
+                </div>
+                <div class="footer-copy">
+                    <span>© 2025 — Trabalho Universitário</span>
+                    <span class="footer-sep">|</span>
+                    <span>Engenharia de Computação</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Botão voltar ao topo -->
+    <button id="back-to-top" aria-label="Voltar ao topo">
+        <span>↑</span>
+    </button>
+
+    <!-- Script principal -->
+    <script src="script.js"></script>
+</body>
+</html>
