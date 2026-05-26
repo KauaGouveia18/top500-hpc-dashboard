@@ -386,25 +386,27 @@ function initHeroCounters() {
    ============================================= */
 (function initSimulator() {
 
-    /* === DADOS DAS MÁQUINAS === */
+    /* === DADOS DAS MÁQUINAS ===
+       pflops = Rmax (desempenho medido HPL/Linpack)
+       Rpeak teórico: El Capitan 2746 / Harpia 120.38 / Sunway 125.44 */
     const machineData = {
         'el-capitan': {
             name:     'El Capitan',
-            pflops:   1809,
+            pflops:   1742,       // Rmax medido (HPL/Linpack)
             power:    29684,
-            cores:    4600000,
+            cores:    11340096,
             dispCores: 400,
         },
         'harpia': {
             name:     'Harpia',
-            pflops:   120.38,
+            pflops:   56.60,      // Rmax medido (120.38 = Rpeak teórico)
             power:    1840,
-            cores:    200000,
+            cores:    284160,
             dispCores: 400,
         },
         'sunway': {
             name:     'Sunway TaihuLight',
-            pflops:   93.01,
+            pflops:   93.01,      // Rmax medido (125.44 = Rpeak teórico)
             power:    15371,
             cores:    10649600,
             dispCores: 400,
@@ -974,8 +976,46 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 
 
 /* =============================================
-   18. CONSOLE EASTER EGG
+   18. TOOLTIP TOUCH HANDLER (MOBILE)
+   ============================================= */
+(function initTooltips() {
+    // No desktop, CSS :hover já funciona.
+    // No mobile (touch), alterna a classe 'active' no ícone ao toque.
+    const isTouchDevice = () =>
+        window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+
+    document.addEventListener('click', (e) => {
+        const icon = e.target.closest('.tooltip-icon');
+
+        if (icon) {
+            // Fecha todos os outros tooltips primeiro
+            document.querySelectorAll('.tooltip-icon.active').forEach(i => {
+                if (i !== icon) i.classList.remove('active');
+            });
+            icon.classList.toggle('active');
+            e.stopPropagation();
+            return;
+        }
+
+        // Clique fora → fecha todos
+        document.querySelectorAll('.tooltip-icon.active').forEach(i =>
+            i.classList.remove('active')
+        );
+    });
+
+    // Garante que tooltips não fechem ao clicar dentro deles
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.tooltip-box')) {
+            e.stopPropagation();
+        }
+    });
+})();
+
+
+/* =============================================
+   19. CONSOLE EASTER EGG
    ============================================= */
 console.log('%cTOP500 — Supercomputadores', 'color:#00d4ff; font-family:monospace; font-size:18px; font-weight:bold;');
 console.log('%cEngenharia de Computação', 'color:#66fcf1; font-family:monospace; font-size:12px;');
-console.log('%c▶ El Capitan: 1.809 PFLOPS | Harpia: 120.38 PFLOPS | Sunway: 93.01 PFLOPS', 'color:#94a3b8; font-family:monospace; font-size:11px;');
+console.log('%c▶ El Capitan Rmax: 1.742 PFLOPS | Harpia Rmax: 56.60 PFLOPS | Sunway Rmax: 93.01 PFLOPS', 'color:#94a3b8; font-family:monospace; font-size:11px;');
+console.log('%c⚠ Atenção: Rmax = HPL/Linpack medido. Rpeak teórico: El Capitan 2.746 / Harpia 120.38 / Sunway 125.44 PFLOPS', 'color:#f59e0b; font-family:monospace; font-size:10px;');
