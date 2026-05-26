@@ -1389,7 +1389,10 @@
                     </div>
 
                     <div class="sim-tasks">
-                        <label class="sim-label">Selecione uma Tarefa:</label>
+                        <div class="sim-tasks-header">
+                            <label class="sim-label">Selecione uma Tarefa:</label>
+                            <button class="sim-stop-btn" id="sim-stop-btn" disabled>■ PARAR</button>
+                        </div>
                         <div class="sim-task-grid">
                             <button class="sim-task-btn" data-task="ia" data-icon="◈">
                                 <span class="stb-icon">◈</span>
@@ -1478,6 +1481,10 @@
                         <div class="sdm-card sdm-data">
                             <span class="sdm-label">Transfer. Dados</span>
                             <span class="sdm-value" id="sdm-data">0 TB/s</span>
+                        </div>
+                        <div class="sdm-card sdm-efficiency">
+                            <span class="sdm-label">Eficiência</span>
+                            <span class="sdm-value" id="sdm-efficiency">-- GFLOPS/W</span>
                         </div>
                     </div>
                 </div>

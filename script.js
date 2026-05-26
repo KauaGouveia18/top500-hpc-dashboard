@@ -520,6 +520,7 @@ function initHeroCounters() {
     const sdmTemp      = document.getElementById('sdm-temp');
     const sdmPower     = document.getElementById('sdm-power');
     const sdmData      = document.getElementById('sdm-data');
+    const sdmEfficiency = document.getElementById('sdm-efficiency');
     const coresCount   = document.getElementById('cores-count');
     const coresGrid    = document.getElementById('cores-grid');
     const simLog       = document.getElementById('sim-log');
@@ -530,6 +531,72 @@ function initHeroCounters() {
     const srvVal       = document.getElementById('srv-val');
     const supVal       = document.getElementById('sup-val');
     const tempIndicator = document.getElementById('temp-indicator');
+    const stopBtn      = document.getElementById('sim-stop-btn');
+
+    /* === SPARKLINE — histórico de PFLOPS === */
+    const sparkEl      = document.getElementById('pflops-spark');
+    const sparkCanvas  = document.createElement('canvas');
+    sparkCanvas.width  = 200;
+    sparkCanvas.height = 28;
+    sparkEl.appendChild(sparkCanvas);
+    const sparkCtx    = sparkCanvas.getContext('2d');
+    const sparkData   = [];
+    const SPARK_MAX   = 24; // pontos no histórico
+
+    function pushSparkValue(v) {
+        sparkData.push(v);
+        if (sparkData.length > SPARK_MAX) sparkData.shift();
+        drawSparkline();
+    }
+
+    function drawSparkline() {
+        const w = sparkCanvas.width;
+        const h = sparkCanvas.height;
+        sparkCtx.clearRect(0, 0, w, h);
+        if (sparkData.length < 2) return;
+
+        const max  = Math.max(...sparkData) || 1;
+        const step = w / (SPARK_MAX - 1);
+
+        sparkCtx.beginPath();
+        sparkData.forEach((val, i) => {
+            const x = i * step;
+            const y = h - (val / max) * (h - 2) - 1;
+            i === 0 ? sparkCtx.moveTo(x, y) : sparkCtx.lineTo(x, y);
+        });
+        sparkCtx.strokeStyle = '#00d4ff';
+        sparkCtx.lineWidth   = 1.5;
+        sparkCtx.stroke();
+
+        // Fill suave abaixo da linha
+        sparkCtx.lineTo((sparkData.length - 1) * step, h);
+        sparkCtx.lineTo(0, h);
+        sparkCtx.closePath();
+        const grad = sparkCtx.createLinearGradient(0, 0, 0, h);
+        grad.addColorStop(0, 'rgba(0,212,255,0.3)');
+        grad.addColorStop(1, 'rgba(0,212,255,0)');
+        sparkCtx.fillStyle = grad;
+        sparkCtx.fill();
+    }
+
+    /* === FORMATA DURAÇÃO PARA EXIBIÇÃO === */
+    function formatDuration(seconds) {
+        if (seconds < 60)           return seconds.toFixed(0) + 's';
+        if (seconds < 3600)         return (seconds / 60).toFixed(0) + ' min';
+        if (seconds < 86400)        return (seconds / 3600).toFixed(1) + 'h';
+        if (seconds < 86400 * 365)  return (seconds / 86400).toFixed(0) + ' dias';
+        return (seconds / (86400 * 365)).toFixed(1) + ' anos';
+    }
+
+    /* Complexidade estimada de cada tarefa (em PFLOP-segundos) */
+    const taskComplexity = {
+        ia:        3.6e6,   // ex: 3,6×10⁶ PFLOP-s (~30 min num sistema de ~2 PFLOPS)
+        clima:     1.2e6,
+        petroleo:  2.4e6,
+        dados:     0.9e6,
+        simulacao: 7.2e6,
+    };
+    const NOTEBOOK_PFLOPS = 0.001; // ~1 TFLOPS
 
     /* === GERA GRID DE NÚCLEOS (400 desktop / 200 mobile) === */
     const isMobile = () => window.innerWidth <= 640;
@@ -584,12 +651,14 @@ function initHeroCounters() {
         state.running = true;
         state.tStart  = Date.now();
         state.logIdx  = 0;
+        sparkData.length = 0; // limpa histórico da sparkline
 
         const machine = machineData[state.machine];
         const profile = taskProfiles[state.task] || taskProfiles.ia;
 
         statusBadge.textContent = 'EM EXECUÇÃO';
         statusBadge.classList.add('running');
+        stopBtn.disabled = false;
 
         addLog(`[INIT] Iniciando ${profile.name} em ${machine.name}...`, 'active');
 
@@ -614,12 +683,19 @@ function initHeroCounters() {
         const pflopsTarget = machine.pflops * (profile.gpu / 100) * 0.95;
         animateValue(0, pflopsTarget, 2000, v => {
             sdmPflops.textContent = v < 1 ? v.toFixed(3) : v.toFixed(1);
+            pushSparkValue(v);
         });
 
         /* Consumo de energia */
         const powerTarget = Math.round(machine.power * (profile.cpu / 100));
         animateValue(0, powerTarget, 1800, v => {
             sdmPower.textContent = formatNumber(v) + ' kW';
+            // Eficiência: GFLOPS/W (atualiza junto com potência)
+            if (v > 0) {
+                const currentPflops = parseFloat(sdmPflops.textContent) || 0;
+                const gflopsPerW = (currentPflops * 1000) / v;
+                sdmEfficiency.textContent = gflopsPerW.toFixed(2) + ' GFLOPS/W';
+            }
         });
 
         /* Transferência de dados */
@@ -637,13 +713,27 @@ function initHeroCounters() {
 
         /* Comparação de escala */
         animateValue(0, 100, 1200, v => {
-            nbBar.style.width  = (v * 0.002).toFixed(2) + '%';  // notebook é ínfimo
-            srvBar.style.width = Math.min(v * 0.03, 3) + '%';     // servidor = ~3%
+            nbBar.style.width  = (v * 0.002).toFixed(2) + '%';
+            srvBar.style.width = Math.min(v * 0.03, 3) + '%';
         });
         supBar.style.width = '100%';
         supVal.textContent = machine.pflops + ' PFLOPS';
         nbVal.textContent  = '~0.01 TFLOPS';
         srvVal.textContent = '~0.1 PFLOPS';
+
+        /* Comparação de tempo — log após 3s */
+        setTimeout(() => {
+            if (!state.running) return;
+            const taskKey    = state.task || 'ia';
+            const complexity = taskComplexity[taskKey] || taskComplexity.ia;
+            const superSecs  = complexity / pflopsTarget;
+            const notebookSecs = complexity / NOTEBOOK_PFLOPS;
+            const speedup    = Math.round(notebookSecs / superSecs);
+            addLog(
+                `[PERF] Esta tarefa aqui: ${formatDuration(superSecs)} | Notebook: ${formatDuration(notebookSecs)} (${speedup.toLocaleString('pt-BR')}× mais rápido)`,
+                'active'
+            );
+        }, 3000);
 
         /* Variações em tempo real */
         state.interval = setInterval(() => {
@@ -651,11 +741,19 @@ function initHeroCounters() {
             updateBar(cpuBar, cpuVal, profile.cpu + jitter(), '%');
             updateBar(gpuBar, gpuVal, profile.gpu + jitter(), '%');
 
-            // Flutua PFLOPS levemente
+            // Flutua PFLOPS levemente e atualiza sparkline + eficiência
             const pFluctuation = pflopsTarget * (1 + (Math.random() - 0.5) * 0.04);
             sdmPflops.textContent = pFluctuation < 1
                 ? pFluctuation.toFixed(3)
                 : pFluctuation.toFixed(2);
+            pushSparkValue(pFluctuation);
+
+            // Atualiza eficiência com valores atuais
+            const currentPower = powerTarget * (1 + (Math.random() - 0.5) * 0.03);
+            if (currentPower > 0) {
+                const gflopsPerW = (pFluctuation * 1000) / currentPower;
+                sdmEfficiency.textContent = gflopsPerW.toFixed(2) + ' GFLOPS/W';
+            }
         }, 1800);
 
         /* Log de eventos */
@@ -670,6 +768,60 @@ function initHeroCounters() {
             }
         }, 2400);
     }
+
+    /* === PARA SIMULAÇÃO === */
+    function stopSimulation() {
+        if (state.interval)    clearInterval(state.interval);
+        if (state.logInterval) clearInterval(state.logInterval);
+        if (flickerInterval)   clearInterval(flickerInterval);
+
+        state.running    = false;
+        state.interval   = null;
+        state.logInterval = null;
+
+        statusBadge.textContent = 'AGUARDANDO';
+        statusBadge.classList.remove('running');
+        stopBtn.disabled = true;
+
+        // Zera barras de recursos
+        [cpuBar, gpuBar, memBar, netBar].forEach(b => b.style.width = '0%');
+        [cpuVal, gpuVal, memVal].forEach(el => el.textContent = '0%');
+        netVal.textContent = '0 GB/s';
+
+        // Zera métricas digitais
+        sdmPflops.textContent     = '0.000';
+        sdmTemp.textContent       = '22°C';
+        sdmTemp.style.color       = '';
+        sdmPower.textContent      = '0 kW';
+        sdmData.textContent       = '0 GB/s';
+        sdmEfficiency.textContent = '-- GFLOPS/W';
+        tempIndicator.style.transform = 'scaleX(0)';
+
+        // Zera núcleos
+        coresGrid.querySelectorAll('.sim-core').forEach(c =>
+            c.classList.remove('active', 'hot', 'peak')
+        );
+        coresCount.textContent = '0 ativos';
+
+        // Zera barras de escala
+        nbBar.style.width = '0%';
+        srvBar.style.width = '0%';
+        supBar.style.width = '0%';
+        supVal.textContent = '0 PFLOPS';
+
+        // Limpa sparkline
+        sparkData.length = 0;
+        sparkCtx.clearRect(0, 0, sparkCanvas.width, sparkCanvas.height);
+
+        // Log de encerramento
+        addLog('[STOP] Simulação encerrada. Sistema em standby.', '');
+
+        // Remove highlight das tarefas
+        document.querySelectorAll('.sim-task-btn').forEach(b => b.classList.remove('active'));
+        state.task = null;
+    }
+
+    stopBtn.addEventListener('click', stopSimulation);
 
     /* === ANIMA MÉTRICA (barra + valor) === */
     function animateMetric(bar, valEl, target, format) {
