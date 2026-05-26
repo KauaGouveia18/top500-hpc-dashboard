@@ -11,6 +11,32 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="style.css">
+
+    <!-- Tooltip critical rules — inline fallback garantido -->
+    <style>
+        .tooltip-box {
+            position: absolute !important;
+            bottom: calc(100% + 8px) !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+            z-index: 200 !important;
+        }
+        .tooltip-wrapper:hover .tooltip-box,
+        .tooltip-wrapper .tooltip-icon.active + .tooltip-box,
+        .tooltip-box.visible {
+            opacity: 1 !important;
+            visibility: visible !important;
+            pointer-events: auto !important;
+        }
+        .tooltip-wrapper {
+            display: inline-flex !important;
+            align-items: center !important;
+            position: relative !important;
+        }
+    </style>
 </head>
 <body>
 
