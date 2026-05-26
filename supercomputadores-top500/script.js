@@ -386,25 +386,28 @@ function initHeroCounters() {
    ============================================= */
 (function initSimulator() {
 
-    /* === DADOS DAS MÁQUINAS === */
+    /* === DADOS DAS MÁQUINAS ===
+       pflops = Rmax (desempenho medido HPL/Linpack)
+       Rpeak teórico: El Capitan 2.821,10 / Harpia 120,38 / Sunway 125,44 PFLOP/s
+       Fonte: TOP500, lista de novembro de 2025 */
     const machineData = {
         'el-capitan': {
             name:     'El Capitan',
-            pflops:   1809,
+            pflops:   1809,       // Rmax medido (HPL/Linpack) 1.809,00 PFLOP/s
             power:    29684,
-            cores:    4600000,
+            cores:    11340000,
             dispCores: 400,
         },
         'harpia': {
             name:     'Harpia',
-            pflops:   120.38,
+            pflops:   56.60,      // Rmax medido (120.38 = Rpeak teórico)
             power:    1840,
-            cores:    200000,
+            cores:    284160,
             dispCores: 400,
         },
         'sunway': {
             name:     'Sunway TaihuLight',
-            pflops:   93.01,
+            pflops:   93.01,      // Rmax medido (125.44 = Rpeak teórico)
             power:    15371,
             cores:    10649600,
             dispCores: 400,
@@ -422,10 +425,10 @@ function initHeroCounters() {
             logs: [
                 'Carregando dataset de treinamento...',
                 'Inicializando camadas da rede neural...',
-                'Forward pass — batch 1/4096...',
+                'Forward pass: batch 1/4096...',
                 'Calculando gradientes (backprop)...',
-                'Atualizando pesos — otimizador AdamW...',
-                'GPU utilization: 98.2% — PFLOPS máximos.',
+                'Atualizando pesos: otimizador AdamW...',
+                'GPU utilization: 98.2% (PFLOPS máximos)',
                 'Loss: 2.341 → 1.876 → 1.203...',
                 'Checkpoint salvo: epoch_12.pt',
             ],
@@ -451,7 +454,7 @@ function initHeroCounters() {
             color:   '#4ade80',
             coreLoad: 0.75,
             logs: [
-                'Carregando cubo sísmico 3D — 12 TB...',
+                'Carregando cubo sísmico 3D: 12 TB...',
                 'Aplicando migração RTM (Reverse Time)...',
                 'Processando 80.000 tiros sísmicos...',
                 'Análise de amplitude versus offset (AVO)...',
@@ -472,7 +475,7 @@ function initHeroCounters() {
                 'Aplicando filtros e transformações...',
                 'Executando análise estatística distribuída...',
                 'Gerando visualizações e relatórios...',
-                'Pipeline concluído — 12 min vs 48h no servidor.',
+                'Pipeline concluído: 12 min vs 48h no servidor.',
             ],
         },
         simulacao: {
@@ -484,7 +487,7 @@ function initHeroCounters() {
                 'Configurando simulação de dinâmica molecular...',
                 'Inicializando 10^9 partículas...',
                 'Calculando forças de Lennard-Jones...',
-                'Integrando equações de Newton — Δt = 1 fs...',
+                'Integrando equações de Newton: Δt = 1 fs...',
                 'Passo 1.000.000 / 10.000.000...',
                 'Energia do sistema: -3.241 eV/átomo',
                 'Configuração estrutural exportada para análise.',
@@ -517,6 +520,7 @@ function initHeroCounters() {
     const sdmTemp      = document.getElementById('sdm-temp');
     const sdmPower     = document.getElementById('sdm-power');
     const sdmData      = document.getElementById('sdm-data');
+    const sdmEfficiency = document.getElementById('sdm-efficiency');
     const coresCount   = document.getElementById('cores-count');
     const coresGrid    = document.getElementById('cores-grid');
     const simLog       = document.getElementById('sim-log');
@@ -527,6 +531,72 @@ function initHeroCounters() {
     const srvVal       = document.getElementById('srv-val');
     const supVal       = document.getElementById('sup-val');
     const tempIndicator = document.getElementById('temp-indicator');
+    const stopBtn      = document.getElementById('sim-stop-btn');
+
+    /* === SPARKLINE — histórico de PFLOPS === */
+    const sparkEl      = document.getElementById('pflops-spark');
+    const sparkCanvas  = document.createElement('canvas');
+    sparkCanvas.width  = 200;
+    sparkCanvas.height = 28;
+    sparkEl.appendChild(sparkCanvas);
+    const sparkCtx    = sparkCanvas.getContext('2d');
+    const sparkData   = [];
+    const SPARK_MAX   = 24; // pontos no histórico
+
+    function pushSparkValue(v) {
+        sparkData.push(v);
+        if (sparkData.length > SPARK_MAX) sparkData.shift();
+        drawSparkline();
+    }
+
+    function drawSparkline() {
+        const w = sparkCanvas.width;
+        const h = sparkCanvas.height;
+        sparkCtx.clearRect(0, 0, w, h);
+        if (sparkData.length < 2) return;
+
+        const max  = Math.max(...sparkData) || 1;
+        const step = w / (SPARK_MAX - 1);
+
+        sparkCtx.beginPath();
+        sparkData.forEach((val, i) => {
+            const x = i * step;
+            const y = h - (val / max) * (h - 2) - 1;
+            i === 0 ? sparkCtx.moveTo(x, y) : sparkCtx.lineTo(x, y);
+        });
+        sparkCtx.strokeStyle = '#00d4ff';
+        sparkCtx.lineWidth   = 1.5;
+        sparkCtx.stroke();
+
+        // Fill suave abaixo da linha
+        sparkCtx.lineTo((sparkData.length - 1) * step, h);
+        sparkCtx.lineTo(0, h);
+        sparkCtx.closePath();
+        const grad = sparkCtx.createLinearGradient(0, 0, 0, h);
+        grad.addColorStop(0, 'rgba(0,212,255,0.3)');
+        grad.addColorStop(1, 'rgba(0,212,255,0)');
+        sparkCtx.fillStyle = grad;
+        sparkCtx.fill();
+    }
+
+    /* === FORMATA DURAÇÃO PARA EXIBIÇÃO === */
+    function formatDuration(seconds) {
+        if (seconds < 60)           return seconds.toFixed(0) + 's';
+        if (seconds < 3600)         return (seconds / 60).toFixed(0) + ' min';
+        if (seconds < 86400)        return (seconds / 3600).toFixed(1) + 'h';
+        if (seconds < 86400 * 365)  return (seconds / 86400).toFixed(0) + ' dias';
+        return (seconds / (86400 * 365)).toFixed(1) + ' anos';
+    }
+
+    /* Complexidade estimada de cada tarefa (em PFLOP-segundos) */
+    const taskComplexity = {
+        ia:        3.6e6,   // ex: 3,6×10⁶ PFLOP-s (~30 min num sistema de ~2 PFLOPS)
+        clima:     1.2e6,
+        petroleo:  2.4e6,
+        dados:     0.9e6,
+        simulacao: 7.2e6,
+    };
+    const NOTEBOOK_PFLOPS = 0.001; // ~1 TFLOPS
 
     /* === GERA GRID DE NÚCLEOS (400 desktop / 200 mobile) === */
     const isMobile = () => window.innerWidth <= 640;
@@ -581,12 +651,14 @@ function initHeroCounters() {
         state.running = true;
         state.tStart  = Date.now();
         state.logIdx  = 0;
+        sparkData.length = 0; // limpa histórico da sparkline
 
         const machine = machineData[state.machine];
         const profile = taskProfiles[state.task] || taskProfiles.ia;
 
         statusBadge.textContent = 'EM EXECUÇÃO';
         statusBadge.classList.add('running');
+        stopBtn.disabled = false;
 
         addLog(`[INIT] Iniciando ${profile.name} em ${machine.name}...`, 'active');
 
@@ -611,12 +683,19 @@ function initHeroCounters() {
         const pflopsTarget = machine.pflops * (profile.gpu / 100) * 0.95;
         animateValue(0, pflopsTarget, 2000, v => {
             sdmPflops.textContent = v < 1 ? v.toFixed(3) : v.toFixed(1);
+            pushSparkValue(v);
         });
 
         /* Consumo de energia */
         const powerTarget = Math.round(machine.power * (profile.cpu / 100));
         animateValue(0, powerTarget, 1800, v => {
             sdmPower.textContent = formatNumber(v) + ' kW';
+            // Eficiência: GFLOPS/W (atualiza junto com potência)
+            if (v > 0) {
+                const currentPflops = parseFloat(sdmPflops.textContent) || 0;
+                const gflopsPerW = (currentPflops * 1000) / v;
+                sdmEfficiency.textContent = gflopsPerW.toFixed(2) + ' GFLOPS/W';
+            }
         });
 
         /* Transferência de dados */
@@ -634,13 +713,27 @@ function initHeroCounters() {
 
         /* Comparação de escala */
         animateValue(0, 100, 1200, v => {
-            nbBar.style.width  = (v * 0.002).toFixed(2) + '%';  // notebook é ínfimo
-            srvBar.style.width = Math.min(v * 0.03, 3) + '%';     // servidor = ~3%
+            nbBar.style.width  = (v * 0.002).toFixed(2) + '%';
+            srvBar.style.width = Math.min(v * 0.03, 3) + '%';
         });
         supBar.style.width = '100%';
         supVal.textContent = machine.pflops + ' PFLOPS';
         nbVal.textContent  = '~0.01 TFLOPS';
         srvVal.textContent = '~0.1 PFLOPS';
+
+        /* Comparação de tempo — log após 3s */
+        setTimeout(() => {
+            if (!state.running) return;
+            const taskKey    = state.task || 'ia';
+            const complexity = taskComplexity[taskKey] || taskComplexity.ia;
+            const superSecs  = complexity / pflopsTarget;
+            const notebookSecs = complexity / NOTEBOOK_PFLOPS;
+            const speedup    = Math.round(notebookSecs / superSecs);
+            addLog(
+                `[PERF] Esta tarefa aqui: ${formatDuration(superSecs)} | Notebook: ${formatDuration(notebookSecs)} (${speedup.toLocaleString('pt-BR')}× mais rápido)`,
+                'active'
+            );
+        }, 3000);
 
         /* Variações em tempo real */
         state.interval = setInterval(() => {
@@ -648,11 +741,19 @@ function initHeroCounters() {
             updateBar(cpuBar, cpuVal, profile.cpu + jitter(), '%');
             updateBar(gpuBar, gpuVal, profile.gpu + jitter(), '%');
 
-            // Flutua PFLOPS levemente
+            // Flutua PFLOPS levemente e atualiza sparkline + eficiência
             const pFluctuation = pflopsTarget * (1 + (Math.random() - 0.5) * 0.04);
             sdmPflops.textContent = pFluctuation < 1
                 ? pFluctuation.toFixed(3)
                 : pFluctuation.toFixed(2);
+            pushSparkValue(pFluctuation);
+
+            // Atualiza eficiência com valores atuais
+            const currentPower = powerTarget * (1 + (Math.random() - 0.5) * 0.03);
+            if (currentPower > 0) {
+                const gflopsPerW = (pFluctuation * 1000) / currentPower;
+                sdmEfficiency.textContent = gflopsPerW.toFixed(2) + ' GFLOPS/W';
+            }
         }, 1800);
 
         /* Log de eventos */
@@ -667,6 +768,60 @@ function initHeroCounters() {
             }
         }, 2400);
     }
+
+    /* === PARA SIMULAÇÃO === */
+    function stopSimulation() {
+        if (state.interval)    clearInterval(state.interval);
+        if (state.logInterval) clearInterval(state.logInterval);
+        if (flickerInterval)   clearInterval(flickerInterval);
+
+        state.running    = false;
+        state.interval   = null;
+        state.logInterval = null;
+
+        statusBadge.textContent = 'AGUARDANDO';
+        statusBadge.classList.remove('running');
+        stopBtn.disabled = true;
+
+        // Zera barras de recursos
+        [cpuBar, gpuBar, memBar, netBar].forEach(b => b.style.width = '0%');
+        [cpuVal, gpuVal, memVal].forEach(el => el.textContent = '0%');
+        netVal.textContent = '0 GB/s';
+
+        // Zera métricas digitais
+        sdmPflops.textContent     = '0.000';
+        sdmTemp.textContent       = '22°C';
+        sdmTemp.style.color       = '';
+        sdmPower.textContent      = '0 kW';
+        sdmData.textContent       = '0 GB/s';
+        sdmEfficiency.textContent = '-- GFLOPS/W';
+        tempIndicator.style.transform = 'scaleX(0)';
+
+        // Zera núcleos
+        coresGrid.querySelectorAll('.sim-core').forEach(c =>
+            c.classList.remove('active', 'hot', 'peak')
+        );
+        coresCount.textContent = '0 ativos';
+
+        // Zera barras de escala
+        nbBar.style.width = '0%';
+        srvBar.style.width = '0%';
+        supBar.style.width = '0%';
+        supVal.textContent = '0 PFLOPS';
+
+        // Limpa sparkline
+        sparkData.length = 0;
+        sparkCtx.clearRect(0, 0, sparkCanvas.width, sparkCanvas.height);
+
+        // Log de encerramento
+        addLog('[STOP] Simulação encerrada. Sistema em standby.', '');
+
+        // Remove highlight das tarefas
+        document.querySelectorAll('.sim-task-btn').forEach(b => b.classList.remove('active'));
+        state.task = null;
+    }
+
+    stopBtn.addEventListener('click', stopSimulation);
 
     /* === ANIMA MÉTRICA (barra + valor) === */
     function animateMetric(bar, valEl, target, format) {
@@ -974,8 +1129,46 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 
 
 /* =============================================
-   18. CONSOLE EASTER EGG
+   18. TOOLTIP TOUCH HANDLER (MOBILE)
    ============================================= */
-console.log('%cTOP500 — Supercomputadores', 'color:#00d4ff; font-family:monospace; font-size:18px; font-weight:bold;');
+(function initTooltips() {
+    // No desktop, CSS :hover já funciona.
+    // No mobile (touch), alterna a classe 'active' no ícone ao toque.
+    const isTouchDevice = () =>
+        window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+
+    document.addEventListener('click', (e) => {
+        const icon = e.target.closest('.tooltip-icon');
+
+        if (icon) {
+            // Fecha todos os outros tooltips primeiro
+            document.querySelectorAll('.tooltip-icon.active').forEach(i => {
+                if (i !== icon) i.classList.remove('active');
+            });
+            icon.classList.toggle('active');
+            e.stopPropagation();
+            return;
+        }
+
+        // Clique fora → fecha todos
+        document.querySelectorAll('.tooltip-icon.active').forEach(i =>
+            i.classList.remove('active')
+        );
+    });
+
+    // Garante que tooltips não fechem ao clicar dentro deles
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.tooltip-box')) {
+            e.stopPropagation();
+        }
+    });
+})();
+
+
+/* =============================================
+   19. CONSOLE EASTER EGG
+   ============================================= */
+console.log('%cTOP500: Supercomputadores', 'color:#00d4ff; font-family:monospace; font-size:18px; font-weight:bold;');
 console.log('%cEngenharia de Computação', 'color:#66fcf1; font-family:monospace; font-size:12px;');
-console.log('%c▶ El Capitan: 1.809 PFLOPS | Harpia: 120.38 PFLOPS | Sunway: 93.01 PFLOPS', 'color:#94a3b8; font-family:monospace; font-size:11px;');
+console.log('%c▶ El Capitan Rmax: 1.809,00 PFLOP/s | Harpia Rmax: 56,60 PFLOP/s | Sunway Rmax: 93,01 PFLOP/s', 'color:#94a3b8; font-family:monospace; font-size:11px;');
+console.log('%c⚠ Atenção: Rmax = HPL/Linpack medido. Rpeak teórico: El Capitan 2.821,10 / Harpia 120,38 / Sunway 125,44 PFLOP/s | Fonte: TOP500 nov/2025', 'color:#f59e0b; font-family:monospace; font-size:10px;');
