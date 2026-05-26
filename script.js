@@ -388,13 +388,14 @@ function initHeroCounters() {
 
     /* === DADOS DAS MÁQUINAS ===
        pflops = Rmax (desempenho medido HPL/Linpack)
-       Rpeak teórico: El Capitan 2746 / Harpia 120.38 / Sunway 125.44 */
+       Rpeak teórico: El Capitan 2.821,10 / Harpia 120,38 / Sunway 125,44 PFLOP/s
+       Fonte: TOP500, lista de novembro de 2025 */
     const machineData = {
         'el-capitan': {
             name:     'El Capitan',
-            pflops:   1742,       // Rmax medido (HPL/Linpack)
+            pflops:   1809,       // Rmax medido (HPL/Linpack) 1.809,00 PFLOP/s
             power:    29684,
-            cores:    11340096,
+            cores:    11340000,
             dispCores: 400,
         },
         'harpia': {
@@ -424,10 +425,10 @@ function initHeroCounters() {
             logs: [
                 'Carregando dataset de treinamento...',
                 'Inicializando camadas da rede neural...',
-                'Forward pass — batch 1/4096...',
+                'Forward pass: batch 1/4096...',
                 'Calculando gradientes (backprop)...',
-                'Atualizando pesos — otimizador AdamW...',
-                'GPU utilization: 98.2% — PFLOPS máximos.',
+                'Atualizando pesos: otimizador AdamW...',
+                'GPU utilization: 98.2% (PFLOPS máximos)',
                 'Loss: 2.341 → 1.876 → 1.203...',
                 'Checkpoint salvo: epoch_12.pt',
             ],
@@ -453,7 +454,7 @@ function initHeroCounters() {
             color:   '#4ade80',
             coreLoad: 0.75,
             logs: [
-                'Carregando cubo sísmico 3D — 12 TB...',
+                'Carregando cubo sísmico 3D: 12 TB...',
                 'Aplicando migração RTM (Reverse Time)...',
                 'Processando 80.000 tiros sísmicos...',
                 'Análise de amplitude versus offset (AVO)...',
@@ -474,7 +475,7 @@ function initHeroCounters() {
                 'Aplicando filtros e transformações...',
                 'Executando análise estatística distribuída...',
                 'Gerando visualizações e relatórios...',
-                'Pipeline concluído — 12 min vs 48h no servidor.',
+                'Pipeline concluído: 12 min vs 48h no servidor.',
             ],
         },
         simulacao: {
@@ -486,7 +487,7 @@ function initHeroCounters() {
                 'Configurando simulação de dinâmica molecular...',
                 'Inicializando 10^9 partículas...',
                 'Calculando forças de Lennard-Jones...',
-                'Integrando equações de Newton — Δt = 1 fs...',
+                'Integrando equações de Newton: Δt = 1 fs...',
                 'Passo 1.000.000 / 10.000.000...',
                 'Energia do sistema: -3.241 eV/átomo',
                 'Configuração estrutural exportada para análise.',
@@ -1015,7 +1016,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 /* =============================================
    19. CONSOLE EASTER EGG
    ============================================= */
-console.log('%cTOP500 — Supercomputadores', 'color:#00d4ff; font-family:monospace; font-size:18px; font-weight:bold;');
+console.log('%cTOP500: Supercomputadores', 'color:#00d4ff; font-family:monospace; font-size:18px; font-weight:bold;');
 console.log('%cEngenharia de Computação', 'color:#66fcf1; font-family:monospace; font-size:12px;');
-console.log('%c▶ El Capitan Rmax: 1.742 PFLOPS | Harpia Rmax: 56.60 PFLOPS | Sunway Rmax: 93.01 PFLOPS', 'color:#94a3b8; font-family:monospace; font-size:11px;');
-console.log('%c⚠ Atenção: Rmax = HPL/Linpack medido. Rpeak teórico: El Capitan 2.746 / Harpia 120.38 / Sunway 125.44 PFLOPS', 'color:#f59e0b; font-family:monospace; font-size:10px;');
+console.log('%c▶ El Capitan Rmax: 1.809,00 PFLOP/s | Harpia Rmax: 56,60 PFLOP/s | Sunway Rmax: 93,01 PFLOP/s', 'color:#94a3b8; font-family:monospace; font-size:11px;');
+console.log('%c⚠ Atenção: Rmax = HPL/Linpack medido. Rpeak teórico: El Capitan 2.821,10 / Harpia 120,38 / Sunway 125,44 PFLOP/s | Fonte: TOP500 nov/2025', 'color:#f59e0b; font-family:monospace; font-size:10px;');
